@@ -1,0 +1,34 @@
+server:
+  port: 8500
+spring:
+  application:
+    name: single-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8300/eureka
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+zuul:
+  prefix: /api # 添加路由前缀
+  retryable: true
+
+  routes:
+    single-user-service: /user/**
+    auth-service: /auth/**
+
+
+
+ribbon:
+  ConnectTimeout: 3500 # 连接超时时间(ms)
+  ReadTimeout: 5000 # 通信超时时间(ms)
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMillisecond: 10000 # 熔断超时时长：10000ms
